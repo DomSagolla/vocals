@@ -49,7 +49,7 @@ get'/feed' do
 
   Twilio::TwiML::Response.new do |response|
 
-    response.Say 'Here are the recordings from today.', :voice => 'woman'
+    response.Say 'Here is your audio feed', :voice => 'woman'
     latestTenRecordings = client().account.recordings.list()[1..10]
 
     latestTenRecordings.each do |recording|
@@ -103,7 +103,7 @@ helpers do
       end
       response.Say "Record your message.", :voice => 'woman'
       response.Play '/beep'
-      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/playback', :method => 'get'
+      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'
     end.text
   end
 
