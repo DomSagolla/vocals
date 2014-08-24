@@ -34,8 +34,7 @@ end
 get '/playback/handle-recording/:recordingSID' do
   if params['Digits'] == '2'
     delete(params['recordingSID'])
-    response.Play '/paper'
-    response.Pause :length => '0.5'
+
     deletedMsg = "Audio deleted."
     getRecord(deletedMsg)
 
@@ -69,10 +68,6 @@ end
 
 get '/beep' do
   redirect '/beep.mp3'
-end
-
-get '/paper' do
-  redirect '/paper_throw.wav'
 end
 
 get '/pop' do
