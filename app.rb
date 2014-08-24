@@ -65,6 +65,9 @@ get'/feed' do
 
 end
 
+get '/beep' do
+  redirect '/beep.mp3'
+end
 
 helpers do
 
