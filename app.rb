@@ -23,9 +23,9 @@ get '/playback' do
   Twilio::TwiML::Response.new do |response|
     response.Play params['RecordingUrl']
     response.Gather :numDigits => '1', :timeout => 15, :action => "/playback/handle-recording/#{params['RecordingSid']}", :method => 'get' do |gather|
-      gather.Say 'To continue, press 1'
-      gather.Say 'To delete, press 2'
-      gather.Say 'Then, press pound'
+      gather.Say 'To continue, press 1', :voice => 'woman'
+      gather.Say 'To delete, press 2', :voice => 'woman'
+      gather.Say 'Then, press pound', :voice => 'woman'
     end
 
   end.text
@@ -33,13 +33,13 @@ end
 
 get '/playback/handle-recording/:recordingSID' do
   if params['Digits'] == '2'
-    puts "IF STATEMENT"
     delete(params['recordingSID'])
+    response.Play '/paper'
+    response.Pause :length => '0.5'
     deletedMsg = "Audio deleted."
     getRecord(deletedMsg)
 
   elsif params['Digits'] != '2'
-    puts "ELSE STATEMENT"
     getFeed()
 
   end
@@ -50,16 +50,18 @@ get'/feed' do
 
   Twilio::TwiML::Response.new do |response|
 
-    response.Say 'Here are the recordings from today.'
-    latestTenRecordings = client().account.recordings.list()[1..3]
+    response.Say 'Here are the recordings from today.', :voice => 'woman'
+    latestTenRecordings = client().account.recordings.list()[1..10]
 
     latestTenRecordings.each do |recording|
 
+      response.Pause :length => '0.5'
       response.Play recording.mp3()
+      response.Play '/pop'
 
     end
-
-    response.Say 'Goodbye.'
+    response.Play '/end'
+    response.Say 'Goodbye.', :voice => 'woman'
 
   end.text
 
@@ -67,6 +69,18 @@ end
 
 get '/beep' do
   redirect '/beep.mp3'
+end
+
+get '/paper' do
+  redirect '/paper_throw.wav'
+end
+
+get '/pop' do
+  redirect '/pop.mp3'
+end
+
+get '/end' do
+  redirect '/end.wav'
 end
 
 helpers do
@@ -89,10 +103,12 @@ helpers do
   def getRecord(appendMsg)
     Twilio::TwiML::Response.new do |response|
       if appendMsg
-        response.Say appendMsg
+        response.Say appendMsg, :voice => 'woman'
+        response.Pause :length => '1'
       end
-      response.Say "Record your message."
-      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "true", :action => '/playback', :method => 'get'
+      response.Say "Record your message.", :voice => 'woman'
+      response.Play '/beep'
+      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/playback', :method => 'get'
     end.text
   end
 
