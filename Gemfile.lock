@@ -14,8 +14,16 @@ GEM
       multi_json (~> 1.0)
     arel (3.0.3)
     builder (3.0.4)
+    coderay (1.1.0)
     i18n (0.6.1)
+    jwt (0.1.11)
+      multi_json (>= 1.5)
+    method_source (0.8.2)
     multi_json (1.10.1)
+    pry (0.9.12.6)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -26,7 +34,12 @@ GEM
       rack-protection (~> 1.1, >= 1.1.2)
       tilt (~> 1.3, >= 1.3.3)
       tilt (~> 1.3, >= 1.3.3)
+    slop (3.5.0)
     tilt (1.4.1)
+    twilio-ruby (3.11.5)
+      builder (>= 2.1.2)
+      jwt (>= 0.1.2)
+      multi_json (>= 1.3.0)
     tzinfo (0.3.41)
 
 PLATFORMS
@@ -34,4 +47,6 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (= 3.2.13)
+  pry
   sinatra (= 1.3.1)
+  twilio-ruby
