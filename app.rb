@@ -18,6 +18,11 @@ get '/' do
 
 end
 
+
+get'/app' do
+   send_file 'views/home.html'
+end
+
 get '/playback' do
 
   Twilio::TwiML::Response.new do |response|
