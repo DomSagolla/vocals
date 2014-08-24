@@ -50,7 +50,7 @@ get'/feed' do
   Twilio::TwiML::Response.new do |response|
 
     response.Say 'Here is your audio feed', :voice => 'woman'
-    latestTenRecordings = client().account.recordings.list()[1..10]
+    latestTenRecordings = client().account.recordings.list()[0..9]
 
     latestTenRecordings.each do |recording|
 
