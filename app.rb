@@ -18,7 +18,6 @@ get '/' do
 
 end
 
-
 get'/app' do
    send_file 'views/home.html'
 end
@@ -93,13 +92,20 @@ helpers do
 
   def getRecord(appendMsg)
     Twilio::TwiML::Response.new do |response|
+      userResponse = response.Gather
       if appendMsg
         response.Say appendMsg, :voice => 'woman'
         response.Pause :length => '1'
+      else
+        response.Say "Hello"
       end
       response.Say "Record your message.", :voice => 'woman'
       response.Play '/beep.mp3'
-      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'
+      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'  
+      if userResponse['Digits'] == "*"
+        getFeed()
+      else
+      end
     end.text
   end
 
