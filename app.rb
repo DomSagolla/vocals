@@ -23,6 +23,11 @@ get'/app' do
    send_file 'views/home.html'
 end
 
+get'/demo' do
+   send_file 'views/home_demo.html'
+end
+
+
 get '/playback' do
 
   Twilio::TwiML::Response.new do |response|
@@ -51,9 +56,7 @@ get '/playback/handle-recording/:recordingSID' do
 end
 
 get'/feed' do
-
   Twilio::TwiML::Response.new do |response|
-
     response.Say 'Here is your audio feed', :voice => 'woman'
     latestTenRecordings = client().account.recordings.list()[0..9]
 
@@ -61,26 +64,14 @@ get'/feed' do
 
       response.Pause :length => '0.5'
       response.Play recording.mp3()
-      response.Play '/pop'
+      response.Play '/pop.mp3'
 
     end
-    response.Play '/end'
+    response.Play '/end.wav'
     response.Say 'Goodbye.', :voice => 'woman'
 
   end.text
 
-end
-
-get '/beep' do
-  redirect '/beep.mp3'
-end
-
-get '/pop' do
-  redirect '/pop.mp3'
-end
-
-get '/end' do
-  redirect '/end.wav'
 end
 
 helpers do
@@ -107,7 +98,7 @@ helpers do
         response.Pause :length => '1'
       end
       response.Say "Record your message.", :voice => 'woman'
-      response.Play '/beep'
+      response.Play '/beep.mp3'
       response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'
     end.text
   end
