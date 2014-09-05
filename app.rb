@@ -26,9 +26,7 @@ get'/demo' do
    send_file 'views/home_demo.html'
 end
 
-
 get '/playback' do
-
   Twilio::TwiML::Response.new do |response|
     response.Play params['RecordingUrl']
     response.Gather :numDigits => '1', :timeout => 15, :action => "/playback/handle-recording/#{params['RecordingSid']}", :method => 'get' do |gather|
@@ -73,6 +71,11 @@ get'/feed' do
 
 end
 
+get '/skipOrNot' do
+  
+  
+end
+
 helpers do
 
   def client
@@ -92,22 +95,19 @@ helpers do
 
   def getRecord(appendMsg)
     Twilio::TwiML::Response.new do |response|
-      userResponse = response.Gather
-      if appendMsg
-        response.Say appendMsg, :voice => 'woman'
-        response.Pause :length => '1'
-      else
-        response.Say "Hello"
+      response.Gather :numDigits => '1', :finishOnKey => '', :timeout => 0, :action => '/feed', :method => 'get' do |gather|
+        if appendMsg
+          response.Say appendMsg, :voice => 'woman'
+          response.Pause :length => '1'
+        else
+          response.Say "Hello"
+        end
+        response.Say "Record your message.", :voice => 'woman'
+        response.Play '/beep.mp3'
       end
-      response.Say "Record your message.", :voice => 'woman'
-      response.Play '/beep.mp3'
-      response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'  
-      if userResponse['Digits'] == "*"
-        getFeed()
-      else
-      end
+        response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'
     end.text
   end
 
-
+  
 end
