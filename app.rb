@@ -52,6 +52,15 @@ get '/playback/handle-recording/:recordingSID' do
 
 end
 
+get'/handle-skip' do
+  if params['Digits'] == '*'
+    getFeed()
+  else
+    msg = "I'm sorry, press star to skip to your audio feed."
+    getRecord(msg)
+  end
+end
+
 get'/feed' do
   Twilio::TwiML::Response.new do |response|
     response.Say 'Here is your audio feed', :voice => 'woman'
@@ -69,11 +78,6 @@ get'/feed' do
 
   end.text
 
-end
-
-get '/skipOrNot' do
-  
-  
 end
 
 helpers do
@@ -95,7 +99,8 @@ helpers do
 
   def getRecord(appendMsg)
     Twilio::TwiML::Response.new do |response|
-      response.Gather :numDigits => '1', :finishOnKey => '', :timeout => 0, :action => '/feed', :method => 'get' do |gather|
+      # this Gather method allows you to skip the message 
+      response.Gather :numDigits => '1', :finishOnKey => '', :timeout => 0, :action => '/handle-skip', :method => 'get' do |gather|
         if appendMsg
           response.Say appendMsg, :voice => 'woman'
           response.Pause :length => '1'
@@ -105,7 +110,7 @@ helpers do
         response.Say "Record your message.", :voice => 'woman'
         response.Play '/beep.mp3'
       end
-        response.Record :maxLength => '5', :trim => "trim-silence", :playBeep => "false", :action => '/feed', :method => 'get'
+        response.Record :maxLength => '5', :trim => "trim-silence", :finishOnKey => '#', :playBeep => "false", :action => '/feed', :method => 'get'
     end.text
   end
 
